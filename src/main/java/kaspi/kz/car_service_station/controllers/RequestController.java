@@ -1,6 +1,6 @@
 package kaspi.kz.car_service_station.controllers;
 
-import kaspi.kz.car_service_station.dto.RequestCreateDto;
+import kaspi.kz.car_service_station.dto.requests.RequestCreateDto;
 import kaspi.kz.car_service_station.services.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

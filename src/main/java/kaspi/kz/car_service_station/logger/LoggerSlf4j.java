@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -29,6 +28,12 @@ public class LoggerSlf4j {
     public void error(String msg, Exception ex) {
         if (logger.isErrorEnabled()) {
             logger.error(getMessage(msg), ex);
+        }
+    }
+
+    public void error(String msg) {
+        if (logger.isErrorEnabled()) {
+            logger.error(getMessage(msg));
         }
     }
 

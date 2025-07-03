@@ -30,10 +30,17 @@ public class Request {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "completed")
+    private boolean completed;
+
     public Request(String name, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        
     }
 }
