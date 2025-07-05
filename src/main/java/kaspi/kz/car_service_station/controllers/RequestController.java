@@ -1,6 +1,7 @@
 package kaspi.kz.car_service_station.controllers;
 
 import kaspi.kz.car_service_station.dto.requests.RequestCreateDto;
+import kaspi.kz.car_service_station.dto.requests.RequestGetByStatusDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByUserNameDto;
 import kaspi.kz.car_service_station.services.RequestService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,11 @@ public class RequestController {
 
     @PostMapping("/findByName")
     public ResponseEntity<Object> findByName(@RequestBody RequestGetByUserNameDto requestGetByUserNameDto) {
-        return requestService.getRequestByName(requestGetByUserNameDto);
+        return requestService.getRequestsByName(requestGetByUserNameDto);
+    }
+
+    @PostMapping("/findByStatus")
+    public ResponseEntity<Object> findByStatus(@RequestBody RequestGetByStatusDto requestGetByStatusDto) {
+        return requestService.getRequestsByStatus(requestGetByStatusDto);
     }
 }

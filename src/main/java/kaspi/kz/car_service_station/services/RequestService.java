@@ -1,6 +1,7 @@
 package kaspi.kz.car_service_station.services;
 
 import kaspi.kz.car_service_station.dto.requests.RequestCreateDto;
+import kaspi.kz.car_service_station.dto.requests.RequestGetByStatusDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByUserNameDto;
 import kaspi.kz.car_service_station.entity.Request;
 import kaspi.kz.car_service_station.entity.Status;
@@ -50,7 +51,7 @@ public class RequestService {
         return ResponseEntity.ok().body("New request succesfully created");
     }
 
-    public ResponseEntity<Object> getRequestByName(RequestGetByUserNameDto requestGetByUserNameDto) {
+    public ResponseEntity<Object> getRequestsByName(RequestGetByUserNameDto requestGetByUserNameDto) {
         LoggerSlf4j logger = new LoggerSlf4j("searchRequestByName", requestGetByUserNameDto.getSearchName());
         logger.info("Username: " + requestGetByUserNameDto.getUsername() + ", password: " + requestGetByUserNameDto.getPassword());
         if (!requestGetByUserNameDto.getUsername().equals(envs.getEmployeeName())
@@ -71,6 +72,18 @@ public class RequestService {
         }
         logger.info("Finding user's requests");
         return ResponseEntity.ok().body(requestRepository.getRequestsByUsername(user.getUsername()));
+    }
+
+    public ResponseEntity<Object> getRequestsByStatus(RequestGetByStatusDto requestGetByStatusDto) {
+        LoggerSlf4j logger = new LoggerSlf4j("searchRequestByStatus", requestGetByStatusDto.getStatus().toString());
+        logger.info("Username: " + requestGetByStatusDto.getUsername() + ", password: " + requestGetByStatusDto.getPassword());
+        if (!requestGetByStatusDto.getUsername().equals(envs.getEmployeeName())
+                || !requestGetByStatusDto.getPassword().equals(envs.getEmployeePassword())) {
+            logger.error("Username or password incorrect, please try again");
+            return ResponseEntity.status(401).body("Username or password incorrect, please try again");
+        }
+        logger.info("Finding requests by status");
+        return ResponseEntity.ok().body(requestRepository.findByStatus(requestGetByStatusDto.getStatus()));
     }
 
     private boolean checkUserCredentials(String username, String password, LoggerSlf4j logger) {
