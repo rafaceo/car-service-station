@@ -1,7 +1,9 @@
 package kaspi.kz.car_service_station.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +24,7 @@ public class Request {
     private Status status;
 
     @Column(name = "name")
-    private String name;
+    private String username;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -36,8 +38,8 @@ public class Request {
     @Column(name = "completed")
     private boolean completed;
 
-    public Request(String name, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.name = name;
+    public Request(String username, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.username = username;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
