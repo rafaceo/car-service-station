@@ -3,9 +3,11 @@ package kaspi.kz.car_service_station.services;
 import kaspi.kz.car_service_station.dto.requests.RequestCreateDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByStatusDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByUserNameDto;
+import kaspi.kz.car_service_station.dto.requests.UpdateRequestDto;
 import kaspi.kz.car_service_station.entity.Request;
 import kaspi.kz.car_service_station.entity.Status;
 import kaspi.kz.car_service_station.envs.Envs;
+import kaspi.kz.car_service_station.kafka.producer.RequestStatusProducer;
 import kaspi.kz.car_service_station.logger.LoggerSlf4j;
 import kaspi.kz.car_service_station.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
+    private final RequestStatusProducer requestStatusProducer;
     private final Keycloak keycloak;
     private final Envs envs;
 
@@ -53,7 +56,6 @@ public class RequestService {
 
     public ResponseEntity<Object> getRequestsByName(RequestGetByUserNameDto requestGetByUserNameDto) {
         LoggerSlf4j logger = new LoggerSlf4j("searchRequestByName", requestGetByUserNameDto.getSearchName());
-        logger.info("Username: " + requestGetByUserNameDto.getUsername() + ", password: " + requestGetByUserNameDto.getPassword());
         if (!requestGetByUserNameDto.getUsername().equals(envs.getEmployeeName())
                 || !requestGetByUserNameDto.getPassword().equals(envs.getEmployeePassword())) {
             logger.error("Username or password incorrect, please try again");
@@ -76,7 +78,6 @@ public class RequestService {
 
     public ResponseEntity<Object> getRequestsByStatus(RequestGetByStatusDto requestGetByStatusDto) {
         LoggerSlf4j logger = new LoggerSlf4j("searchRequestByStatus", requestGetByStatusDto.getStatus().toString());
-        logger.info("Username: " + requestGetByStatusDto.getUsername() + ", password: " + requestGetByStatusDto.getPassword());
         if (!requestGetByStatusDto.getUsername().equals(envs.getEmployeeName())
                 || !requestGetByStatusDto.getPassword().equals(envs.getEmployeePassword())) {
             logger.error("Username or password incorrect, please try again");
@@ -84,6 +85,26 @@ public class RequestService {
         }
         logger.info("Finding requests by status");
         return ResponseEntity.ok().body(requestRepository.findByStatus(requestGetByStatusDto.getStatus()));
+    }
+
+    public ResponseEntity<Object> updateRequest(UpdateRequestDto updateRequestDto) {
+        LoggerSlf4j logger = new LoggerSlf4j("updateRequest", updateRequestDto.getUsername());
+        if (!updateRequestDto.getUsername().equals(envs.getEmployeeName())
+                || !updateRequestDto.getPassword().equals(envs.getEmployeePassword())) {
+            logger.error("Username or password incorrect, please try again");
+            return ResponseEntity.status(401).body("Username or password incorrect, please try again");
+        }
+        if(!requestRepository.existsById(updateRequestDto.getUuid())){
+            logger.error("Request does not exist");
+            return ResponseEntity.status(404).body("Request does not exist");
+        }
+        if(updateRequestDto.getStatus().equals(Status.COMPLETED)){
+            logger.info("Notification: Your request has been completed, congratulations!");
+        }
+        logger.info("Sending update to kafka");
+        requestStatusProducer.sendStatusUpdate(updateRequestDto);
+        logger.info("Request updated");
+        return ResponseEntity.ok().body("Request updated successfully");
     }
 
     private boolean checkUserCredentials(String username, String password, LoggerSlf4j logger) {
@@ -106,6 +127,4 @@ public class RequestService {
             return false;
         }
     }
-
-
 }

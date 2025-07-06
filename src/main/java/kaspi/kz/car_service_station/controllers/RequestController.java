@@ -3,6 +3,7 @@ package kaspi.kz.car_service_station.controllers;
 import kaspi.kz.car_service_station.dto.requests.RequestCreateDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByStatusDto;
 import kaspi.kz.car_service_station.dto.requests.RequestGetByUserNameDto;
+import kaspi.kz.car_service_station.dto.requests.UpdateRequestDto;
 import kaspi.kz.car_service_station.services.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/request")
 public class RequestController {
     private final RequestService requestService;
+
 
     @PostMapping("/create")
     public ResponseEntity<Object> createRequest(@RequestBody RequestCreateDto requestCreateDto) {
@@ -31,4 +33,10 @@ public class RequestController {
     public ResponseEntity<Object> findByStatus(@RequestBody RequestGetByStatusDto requestGetByStatusDto) {
         return requestService.getRequestsByStatus(requestGetByStatusDto);
     }
+
+    @PostMapping("/updateRequest")
+    public ResponseEntity<Object> updateRequest(@RequestBody UpdateRequestDto dto) {
+        return requestService.updateRequest(dto);
+    }
+
 }
