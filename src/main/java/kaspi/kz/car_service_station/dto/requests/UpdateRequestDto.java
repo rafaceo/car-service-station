@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
@@ -18,4 +19,5 @@ public class UpdateRequestDto {
     private UUID uuid;
     private Status status;
     private String description;
+    private LocalDateTime updatedAt;
 }

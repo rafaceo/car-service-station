@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class RequestStatusConsumer {
@@ -14,6 +16,6 @@ public class RequestStatusConsumer {
 
     @KafkaListener(topics = "request-status-updates", groupId = "request-service")
     public void consume(UpdateRequestDto dto) {
-            requestRepository.updateStatus(dto.getUuid(), dto.getStatus(), dto.getDescription(), dto.getUsername());
+            requestRepository.updateStatus(dto.getUuid(), dto.getStatus(), dto.getDescription(), dto.getUsername(), LocalDateTime.now());
     }
 }

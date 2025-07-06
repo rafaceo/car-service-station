@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findByStatus(Status status);
     @Modifying
     @Transactional
-    @Query("UPDATE Request r SET r.status = :status, r.description = :description, r.updatedBy = :updatedBy WHERE r.id = :uuid")
-    void updateStatus(UUID uuid, Status status, String description, String updatedBy);
+    @Query("UPDATE Request r SET r.status = :status, r.description = :description, r.updatedBy = :updatedBy, r.updatedAt = :updatedAt WHERE r.id = :uuid")
+    void updateStatus(UUID uuid, Status status, String description, String updatedBy, LocalDateTime updatedAt);
     boolean existsById(UUID uuid);
 }
